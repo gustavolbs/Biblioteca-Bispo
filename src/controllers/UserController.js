@@ -4,9 +4,9 @@ const User = require('../models/user');
 
 class UserController {
   async index(req, res) {
-    try {
-      const users = await User.findAll();
-    } catch (error) {
+    const users = await User.findAll();
+
+    if (users === null || users === undefined) {
       return res.status(404).json({ error: 'Nenhum usuário encontrado' });
     }
     return res.json({ users });
@@ -15,9 +15,8 @@ class UserController {
   async show(req, res) {
     const { id } = req.params;
 
-    try {
-      const user = await User.findByPk(id);
-    } catch (error) {
+    const user = await User.findByPk(id);
+    if (user === null || user === undefined) {
       return res.status(404).json({ error: 'Usuário não encontrado' });
     }
 
