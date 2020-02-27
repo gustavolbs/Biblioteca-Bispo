@@ -10,6 +10,7 @@ class book extends Model {
         borrowed: DataTypes.BOOLEAN,
         quantity_borrowed: DataTypes.INTEGER,
         borrowed_for_who: DataTypes.STRING,
+        readed: DataTypes.BOOLEAN,
       },
       {
         sequelize,

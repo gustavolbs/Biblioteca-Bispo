@@ -4,6 +4,33 @@ import { capitalCase } from 'capital-case';
 const Book = require('../models/books');
 
 class BookController {
+  async dashboard(req, res) {
+    const allBooks = await Book.findAndCountAll();
+
+    const response = {
+      sumBooks: 0,
+      uniqueBooks: allBooks.count,
+      authors: 0,
+      borrowedBooks: 0,
+      readedBooks: 0,
+    };
+
+    let allAuthors = [];
+
+    allBooks.rows.map(book => {
+      response.sumBooks += book.quantity;
+      response.borrowedBooks += book.quantity_borrowed;
+      book.readed && response.readedBooks++;
+      allAuthors.push(book.author);
+    });
+
+    const distinctAuthors = [...new Set(allAuthors)];
+
+    response.authors = distinctAuthors.length;
+
+    return res.json({ response });
+  }
+
   async index(req, res) {
     const books = await Book.findAll();
 
@@ -60,6 +87,7 @@ class BookController {
       borrowed: Yup.boolean().required(),
       quantity_borrowed: Yup.number(),
       borrowed_for_who: Yup.string().required(),
+      readed: Yup.boolean().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -75,6 +103,7 @@ class BookController {
       borrowed,
       quantity_borrowed,
       borrowed_for_who,
+      readed,
     } = req.body;
 
     const bookExists = await Book.findOne({
@@ -92,6 +121,7 @@ class BookController {
       borrowed,
       quantity_borrowed,
       borrowed_for_who,
+      readed,
     });
 
     return res.json({
@@ -102,6 +132,7 @@ class BookController {
       borrowed,
       quantity_borrowed,
       borrowed_for_who,
+      readed,
     });
   }
 
@@ -115,6 +146,7 @@ class BookController {
       borrowed: Yup.boolean().required(),
       quantity_borrowed: Yup.number(),
       borrowed_for_who: Yup.string().required(),
+      readed: Yup.boolean().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -130,6 +162,7 @@ class BookController {
       borrowed,
       quantity_borrowed,
       borrowed_for_who,
+      readed,
     } = req.body;
 
     const { id } = req.params;
@@ -148,6 +181,7 @@ class BookController {
         borrowed,
         quantity_borrowed,
         borrowed_for_who,
+        readed,
       },
     });
 
@@ -163,6 +197,7 @@ class BookController {
         borrowed,
         quantity_borrowed,
         borrowed_for_who,
+        readed,
       },
       { where: { id } }
     );
