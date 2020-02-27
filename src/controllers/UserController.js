@@ -3,6 +3,20 @@ import * as Yup from 'yup';
 const User = require('../models/user');
 
 class UserController {
+  async login(req, res) {
+    const { username, password } = req.body;
+
+    const user = await User.findOne({
+      where: { username, password },
+    });
+
+    if (!user) {
+      res.status(400).json({ error: 'Usuário ou senha inválido(s)!' });
+    }
+
+    res.json({ token: user.username, user });
+  }
+
   async index(req, res) {
     const users = await User.findAll();
 
