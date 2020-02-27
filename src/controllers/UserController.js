@@ -14,7 +14,27 @@ class UserController {
       res.status(400).json({ error: 'Usuário ou senha inválido(s)!' });
     }
 
-    res.json({ token: user.username, user });
+    res.json({ token: user.username + '-' + user.createdAt });
+  }
+
+  async verifyToken(req, res) {
+    const { token } = req.body;
+
+    const username = token.split('-')[0];
+
+    const user = await User.findOne({
+      where: { username },
+    });
+
+    var newToken = user.username + '-' + user.createdAt;
+
+    if (token !== newToken) {
+      res
+        .status(400)
+        .json({ error: 'Token inválido! Faça seu login novamente!' });
+    }
+
+    res.json({ token });
   }
 
   async index(req, res) {
