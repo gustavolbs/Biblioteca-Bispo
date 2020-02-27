@@ -14,7 +14,9 @@ class UserController {
       res.status(400).json({ error: 'Usuário ou senha inválido(s)!' });
     }
 
-    res.json({ token: user.username + '-' + user.createdAt });
+    res.json({
+      token: user.username + '-' + user.createdAt.toString().split(' ', 5),
+    });
   }
 
   async verifyToken(req, res) {
@@ -32,16 +34,25 @@ class UserController {
       where: { username },
     });
 
+    if (user === null || user === undefined) {
+      res
+        .status(400)
+        .json({ error: 'Token inválido! Faça seu login novamente!' });
+    }
+
     if (user.permission !== 'ADMIN') {
       res.status(403).json({ error: 'Você não possui permissão para isso!' });
     }
 
-    var newToken = user.username + '-' + user.createdAt;
+    var newToken =
+      user.username + '-' + user.createdAt.toString().split(' ', 5);
 
-    if (token !== newToken) {
-      res
-        .status(400)
-        .json({ error: 'Token inválido! Faça seu login novamente!' });
+    if (token != newToken) {
+      res.json({ token, newToken, equal: token === newToken });
+
+      // res
+      //   .status(400)
+      //   .json({ error: 'Token inválido! Faça seu login novamente!' });
     }
 
     res.json({ token });
