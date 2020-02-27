@@ -20,6 +20,12 @@ class UserController {
   async verifyToken(req, res) {
     const { token } = req.body;
 
+    if (token === null || token === undefined) {
+      res
+        .status(400)
+        .json({ error: 'Token inválido! Faça seu login novamente!' });
+    }
+
     const username = token.split('-')[0];
 
     const user = await User.findOne({
