@@ -32,6 +32,10 @@ class UserController {
       where: { username },
     });
 
+    if (user.permission !== 'ADMIN') {
+      res.status(403).json({ error: 'Você não possui permissão para isso!' });
+    }
+
     var newToken = user.username + '-' + user.createdAt;
 
     if (token !== newToken) {
