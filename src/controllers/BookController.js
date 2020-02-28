@@ -49,6 +49,34 @@ class BookController {
     return res.json(book);
   }
 
+  // async search(req, res) {
+  //   const { name, author } = req.query;
+
+  //   var filter;
+  //   // Find by name and author
+  //   if (name && author) {
+  //     filter = { name: capitalCase(name), author: capitalCase(author) };
+  //   } else if (name) {
+  //     filter = { name: capitalCase(name) };
+  //   } else if (author) {
+  //     filter = { author: capitalCase(author) };
+  //   } else {
+  //     return res
+  //       .status(400)
+  //       .json({ error: 'Nenhum filtro de busca selecionado' });
+  //   }
+
+  //   const books = await Book.findAll({
+  //     where: filter,
+  //   });
+
+  //   if (books.length === 0) {
+  //     return res.status(404).json({ error: 'Livros não encontrado' });
+  //   }
+
+  //   return res.json(books);
+  // }
+
   async search(req, res) {
     const { name, author } = req.query;
 
@@ -66,15 +94,26 @@ class BookController {
         .json({ error: 'Nenhum filtro de busca selecionado' });
     }
 
-    const books = await Book.findAll({
-      where: filter,
+    const books = await Book.findAll();
+
+    let response = [];
+    books.map(book => {
+      if (filter.name && filter.author) {
+        book.name.includes(filter.name) && book.author.includes(filter.author)
+          ? response.push(book)
+          : null;
+      } else if (filter.name) {
+        book.name.includes(filter.name) ? response.push(book) : null;
+      } else {
+        book.author.includes(filter.author) ? response.push(book) : null;
+      }
     });
 
-    if (books.length === 0) {
+    if (response.length === 0) {
       return res.status(404).json({ error: 'Livros não encontrado' });
     }
 
-    return res.json(books);
+    return res.json(response);
   }
 
   async store(req, res) {
