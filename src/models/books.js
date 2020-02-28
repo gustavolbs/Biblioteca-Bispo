@@ -4,6 +4,7 @@ class book extends Model {
   static init(sequelize) {
     super.init(
       {
+        owner: DataTypes.STRING,
         name: DataTypes.STRING,
         author: DataTypes.STRING,
         quantity: DataTypes.INTEGER,

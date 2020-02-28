@@ -31,6 +31,16 @@ class BookController {
     return res.json({ response });
   }
 
+  async booksOwner(req, res) {
+    const { owner } = req.body;
+
+    const books = await Book.findAll({
+      where: { owner },
+    });
+
+    return res.json({ books });
+  }
+
   async index(req, res) {
     const books = await Book.findAll();
 
@@ -48,34 +58,6 @@ class BookController {
 
     return res.json(book);
   }
-
-  // async search(req, res) {
-  //   const { name, author } = req.query;
-
-  //   var filter;
-  //   // Find by name and author
-  //   if (name && author) {
-  //     filter = { name: capitalCase(name), author: capitalCase(author) };
-  //   } else if (name) {
-  //     filter = { name: capitalCase(name) };
-  //   } else if (author) {
-  //     filter = { author: capitalCase(author) };
-  //   } else {
-  //     return res
-  //       .status(400)
-  //       .json({ error: 'Nenhum filtro de busca selecionado' });
-  //   }
-
-  //   const books = await Book.findAll({
-  //     where: filter,
-  //   });
-
-  //   if (books.length === 0) {
-  //     return res.status(404).json({ error: 'Livros não encontrado' });
-  //   }
-
-  //   return res.json(books);
-  // }
 
   async search(req, res) {
     const { name, author } = req.query;
@@ -136,6 +118,7 @@ class BookController {
     }
 
     const {
+      owner,
       name,
       author,
       quantity,
@@ -154,6 +137,7 @@ class BookController {
     }
 
     const { id } = await Book.create({
+      owner,
       name: capitalCase(name),
       author: capitalCase(author),
       quantity,
@@ -165,6 +149,7 @@ class BookController {
 
     return res.json({
       id,
+      owner,
       name,
       author,
       quantity,
@@ -195,6 +180,7 @@ class BookController {
     }
 
     const {
+      owner,
       name,
       author,
       quantity,
@@ -206,9 +192,14 @@ class BookController {
 
     const { id } = req.params;
 
-    const book = await Book.findByPk(id);
+    const book = await Book.findAll({
+      where: {
+        id,
+        owner,
+      },
+    });
 
-    if (!book) {
+    if (!book || !book.length) {
       return res.status(404).json({ error: 'Livro não existente!' });
     }
 

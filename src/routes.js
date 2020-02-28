@@ -15,6 +15,7 @@ routes.delete('/users/:id', UserController.delete);
 
 routes.get('/dashboard/books', BookController.dashboard);
 routes.get('/books', BookController.index);
+routes.post('/booksowner', BookController.booksOwner);
 routes.get('/books/:id', BookController.show);
 routes.get('/search/books', BookController.search);
 routes.post('/book', BookController.store);
