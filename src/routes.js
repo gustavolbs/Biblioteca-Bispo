@@ -19,5 +19,6 @@ routes.get('/books/:id', BookController.show);
 routes.get('/search/books', BookController.search);
 routes.post('/book', BookController.store);
 routes.put('/book/:id', BookController.update);
+routes.delete('/book/:id', BookController.delete);
 
 module.exports = routes;

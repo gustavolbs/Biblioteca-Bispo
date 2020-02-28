@@ -204,6 +204,20 @@ class BookController {
 
     return res.json(req.body);
   }
+
+  async delete(req, res) {
+    const { id } = req.params;
+
+    const book = await Book.findByPk(id);
+
+    if (book === null || book === undefined) {
+      return res.status(404).json({ error: 'Livro não encontrado' });
+    }
+
+    await book.destroy();
+
+    return res.send();
+  }
 }
 
 export default new BookController();
