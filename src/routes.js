@@ -5,8 +5,8 @@ import BookController from './controllers/BookController';
 
 const routes = express.Router();
 
-routes.get('/users', UserController.index);
-routes.get('/users/:id', UserController.show);
+// routes.get('/users', UserController.index);
+// routes.get('/users/:id', UserController.show);
 routes.post('/users', UserController.store);
 routes.post('/login', UserController.login);
 routes.post('/verifyToken', UserController.verifyToken);
